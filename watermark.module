@@ -1,0 +1,101 @@
+<?php
+/**
+ * Implements hook_image_effect_info().
+ */
+function watermark_image_effect_info() {
+  $effects = array();
+  
+  $effects['watermark'] = array(
+    'label' => t('Watermark'),
+    'help' => t('Add a watermark to an image.'),
+    'effect callback' => 'watermark_effect',
+    'form callback' => 'watermark_form',
+    'summary theme' => 'watermark_summary',
+  );
+    
+  return $effects;
+}
+
+/**
+ * Image effect callback; add a text watermark to an image.
+ *
+ * @param $image
+ *   An image object returned by image_load().
+ * @param $data
+ *   An array of attributes to use when performing the watermark effect.
+ * @return
+ *   TRUE on success. FALSE on failure.
+ */
+function watermark_effect(&$image, $data) {
+  $data['text_color'] = str_replace('#', '', $data['text_color']);
+  $red = hexdec(substr($data['text_color'], 0, 2));
+  $green = hexdec(substr($data['text_color'], 2, 2));
+  $blue = hexdec(substr($data['text_color'], 4));
+  $color = imagecolorallocate($image->resource, $red, $green, $blue);
+  imagestring($image->resource, 5, 5, 5, $data['text'], $color);
+}
+
+/**
+ * Form structure for the watermark configuration form.
+ *
+ * @param $data
+ *   The current configuration for this watermark effect.
+ */
+function watermark_form($data) {
+  print_r($data);
+  
+  $form['text_color'] = array(
+    '#type' => 'textfield',
+    '#default_value' => (isset($data['text_color'])) ? $data['text_color'] : '#FFFFFF',
+    '#title' => t('Text color'),
+    '#description' => t('The color of the text to be used for this watermark. Use web-style hex colors (#FFFFFF for white, #000000 for black).'),
+    '#size' => 7,
+    '#maxlength' => 7,
+    '#element_validate' => array('image_effect_color_validate'),
+  );
+
+  $form['text'] = array(
+    '#type' => 'textfield',
+    '#default_value' => (isset($data['text'])) ? $data['text'] : 'Drupal loves kittens!',
+    '#title' => t('Watermark text'),
+    '#description' => t('Text to be written on the image.'),
+    '#size' => 30,
+    '#maxlength' => 60,
+  );
+
+  return $form;
+}
+
+/**
+ * Theme callback for image watermark effect summary output.
+ *
+ * @param $variables
+ *   An associative array containing configuration data.
+ */
+function theme_watermark_summary($variables) {
+  $data = $variables['data']; 
+  print_r($data);
+  return t('with color @textcolor', array('@textcolor' => $data['text_color']));
+}
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function watermark_image_default_styles() {
+  $styles = array();
+
+  $styles['yar'] = array(
+    'effects' => array(
+      array(
+        'name' => 'watermark',
+        'data' => array(
+          'text_color' => '#000000', 
+          'text' => 'YAR!'
+        ),
+        'weight' => 0,
+      ),
+    ),
+  );
+
+  return $styles;
+}

@@ -1,0 +1,7 @@
+;$Id$
+name = Watermark Effect
+description = Adds a very simple text watermark effect for use with Image Styles.
+core = 7.x
+php = 5.2
+package = Drupal 7 Module Development
+files[] = watermark.module
