@@ -3,5 +3,5 @@ name = Watermark Effect
 description = Adds a very simple text watermark effect for use with Image Styles.
 core = 7.x
 php = 5.2
-package = Drupal 7 Module Development
+package = Drupal 7 Development
 files[] = watermark.module
