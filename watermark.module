@@ -42,8 +42,6 @@ function watermark_effect(&$image, $data) {
  *   The current configuration for this watermark effect.
  */
 function watermark_form($data) {
-  print_r($data);
-  
   $form['text_color'] = array(
     '#type' => 'textfield',
     '#default_value' => (isset($data['text_color'])) ? $data['text_color'] : '#FFFFFF',
